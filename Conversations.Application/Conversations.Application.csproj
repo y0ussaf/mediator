@@ -6,8 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\GetConversationsMessages" />
-      <Folder Include="Queries\GetConversationsParticipants" />
       <Folder Include="Queries\GetLastActiveConversationForParticipant" />
     </ItemGroup>
 

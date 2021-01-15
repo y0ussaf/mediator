@@ -9,7 +9,6 @@ namespace Conversations.Application
         public static IServiceCollection AddApplication(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddMediatR(Assembly.GetExecutingAssembly());
-            
             return serviceCollection;
         }
     }
