@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Conversations.Application\Conversations.Application.csproj" />
+      <ProjectReference Include="..\Conversations.Persistence\Conversations.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

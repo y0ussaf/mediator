@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using FluentValidation;
+using Conversations.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -30,9 +30,18 @@ namespace Conversations.API.Common.Middlewares
                 if (e is ValidationException validationException)
                 {
                     code = HttpStatusCode.BadRequest;
-                    result = JsonConvert.SerializeObject(validationException.Errors);
+                    result = JsonConvert.SerializeObject(validationException.Failures);
                 }
-                
+
+                if (e is BadRequest)
+                {
+                    code = HttpStatusCode.BadRequest;
+                }
+
+                if (e is NotFoundException)
+                {
+                    code = HttpStatusCode.NotFound;
+                }
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int) code;
                 if (result ==  string.Empty)
@@ -40,6 +49,7 @@ namespace Conversations.API.Common.Middlewares
                     result = JsonConvert.SerializeObject(new {Error = e.Message});
                 }
                 await context.Response.WriteAsync(result);
+                throw;
             }
         }
     }

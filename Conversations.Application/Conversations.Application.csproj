@@ -6,18 +6,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\GetLastActiveConversationForParticipant" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
       <PackageReference Include="FluentValidation" Version="9.3.0" />
       <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
+      <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Conversations.Domain\Conversations.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Commands\Conversations\Messages" />
+      <Folder Include="Commands\Conversations\Participants" />
+      <Folder Include="Queries\Conversations\Messages" />
+      <Folder Include="Queries\Conversations\Participants" />
     </ItemGroup>
 
 </Project>

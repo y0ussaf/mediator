@@ -6,30 +6,20 @@ namespace Conversations.Domain.Entities
 {
     public class Conversation
     {
-        public int ConversationId { get; set; }
-        private readonly List<Participant> _participants;
-        private readonly List<Message> _messages;
-        public IReadOnlyCollection<Participant> Participants => _participants;
-        
+        public int Id { get; set; }
+        public List<Participant> Participants { get; set; }
+        public List<Message> Messages { get; set; }
         public DateTime CreatedAt { get;  set; }
-        
-        public IReadOnlyCollection<Message> Messages => _messages;
+
+        public Conversation(List<Participant> participants)
+        {
+            Participants = participants;
+        }
 
         public Conversation()
         {
         }
-
-        public Conversation(List<Participant> participants)
-        {
-            _participants = participants;
-            _messages = new List<Message>();
-        }
         
-        public void AddParticipant(Participant participant)
-        {
-            _participants.Add(participant);
-        }
-
-     
     }
+
 }

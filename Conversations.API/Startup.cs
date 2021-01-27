@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Conversations.API.Common.Middlewares;
+using Conversations.Application;
 using Conversations.Application.Common.Interfaces;
+using Conversations.Persistence;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,11 +31,10 @@ namespace Conversations.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddFluentValidation(cg =>
-                {
-                    cg.RegisterValidatorsFromAssemblyContaining(typeof(IConversationsDbContext));
-                });
+            services.AddPersistence(Configuration);
+            services.AddApplication();
+            services.AddControllers();
+            services.AddValidatorsFromAssemblyContaining(typeof(IConversationsRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
