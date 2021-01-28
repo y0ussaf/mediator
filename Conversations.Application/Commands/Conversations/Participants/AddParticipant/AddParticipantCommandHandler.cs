@@ -37,6 +37,10 @@ namespace Conversations.Application.Commands.Conversations.Participants.AddParti
                         throw new NotFoundException("not found conversation");
                     }
 
+                    if (conversation.Type == ConversationType.Contact)
+                    {
+                        throw new BadRequest("you can't add participant to this type of conversation , create group conversation instead");
+                    }
                     Debug.Assert(request.ParticipantId != null, "request.ParticipantId != null");
                     var participantAlreadyExist =
                         await _conversationsRepository.ParticipantBelongsToConversation(request.ConversationId.Value,

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Conversations.Application.Common.Exceptions;
 using Conversations.Application.Common.Interfaces;
+using Conversations.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,7 +38,12 @@ namespace Conversations.Application.Commands.Conversations.Participants.RemovePa
                         throw new NotFoundException("conversation not found");
 
                     }
-
+                    
+                    if (conversation.Type == ConversationType.Contact)
+                    {
+                        throw new BadRequest("you can't remove participant from this type of conversation , create group conversation instead");
+                    }
+                    
                     Debug.Assert(request.ParticipantId != null, "request.ParticipantId != null");
                     await _conversationsRepository.DeleteParticipantFromConversation(request.ConversationId.Value, request.ParticipantId.Value);
                     await unitOfWork.CommitWork();

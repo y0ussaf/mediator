@@ -112,13 +112,18 @@ namespace Conversations.Persistence.Repositories.Conversations
         public async Task CreateConversation(Conversation conversation)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
-            var participantsList = conversation.Participants.Select(p => p.Id.ToString())
-                .ToList();
+            var dt = new DataTable();
+            dt.Columns.Add("ParticipantId",typeof(int));
+            dt.Columns.Add("Role",typeof(byte?));
+            foreach (var conversationParticipant in conversation.ConversationParticipants)
+            {
+                dt.Rows.Add(conversationParticipant.Participant.Id,(byte?) conversationParticipant.Role);
+            }
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.Add("@CreatedAt",conversation.CreatedAt,
-                DbType.DateTime2);
-            dynamicParameters.Add("@ParticipantsIdsStr",new DbString {IsAnsi = true, Length = -1, Value = string.Join(',',participantsList)},DbType.AnsiString);
+            dynamicParameters.Add("@CreatedAt",conversation.CreatedAt, DbType.DateTime2);
+            dynamicParameters.Add("@Type",(int) conversation.Type);
             dynamicParameters.Add("@ConversationId",dbType:DbType.Int32,direction: ParameterDirection.Output);
+            dynamicParameters.Add("@ParticipantsWithRole",dt.AsTableValuedParameter("ParticipantsWithRole"));
             await connection.ExecuteAsync(
                 @"St_InsertConversation",dynamicParameters,_unitOfWorkContext.GetTransaction(),commandType:CommandType.StoredProcedure
             );
