@@ -1,0 +1,15 @@
+﻿@model EmailConfirmationSentVm
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    var sendEmailConfirmationFormVm = new SendEmailConfirmationFormVm()
+    {
+        Email = Model.Username,
+        ReturnUrl = Model.ReturnUrl
+    };
+}
+
+<h2>we sent an email confirmation to @Model.Email : confirm your account please </h2>
+<h3> if you didn't receive an email click here : </h3>
+<partial name="_EmailConfirmationForm" model="sendEmailConfirmationFormVm"/>

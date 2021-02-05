@@ -1,0 +1,10 @@
+﻿@model SendEmailConfirmationFormVm
+
+
+<div>
+    <form method="post" asp-action="SendNewEmailConfirmation">
+        <input type="hidden"  asp-for="ReturnUrl"/>
+        <input type="hidden" asp-for="Email"/>
+        <button type="submit" class="btn btn-primary">Send me new Confirmation Email</button>
+    </form>
+</div>

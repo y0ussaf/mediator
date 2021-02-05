@@ -19,63 +19,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServerHost.Quickstart.UI
 {
     [SecurityHeaders]
     [AllowAnonymous]
-    public class AccountController : Controller
+    public class AccountController : AccountBaseController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
-        private readonly IEventService _events;
-
         public AccountController(
-            UserManager<ApplicationUser> userManager,
+            UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager,
-            IIdentityServerInteractionService interaction,
-            IClientStore clientStore,
-            IAuthenticationSchemeProvider schemeProvider,
-            IEventService events)
+            IIdentityServerInteractionService interaction, 
+            IClientStore clientStore, 
+            IAuthenticationSchemeProvider schemeProvider, 
+            IEventService events,
+            ILogger<AccountController> logger
+            ) : base(userManager, signInManager, interaction, clientStore, schemeProvider, events,logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _interaction = interaction;
-            _clientStore = clientStore;
-            _schemeProvider = schemeProvider;
-            _events = events;
+            
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string id,string code,string returnUrl)
-        {
-            code = Encoding.UTF8.GetString(Base64Url.Decode(code));
-            var user = await _userManager.FindByIdAsync(id);
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    Console.WriteLine(error.Description);
-                }
-            }
-            if (string.IsNullOrEmpty(returnUrl))
-            {
-                return RedirectToAction("Index", "Home");
-            }
 
-            return Redirect(returnUrl);
-        }
-
+        
         [HttpGet]
         public async Task<IActionResult> Register(string returnUrl)
         {
             return View("register",new RegisterViewModel {ReturnUrl = returnUrl});
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerVm)
         {
             if (ModelState.IsValid)
@@ -88,14 +61,15 @@ namespace IdentityServerHost.Quickstart.UI
                 var result = await _userManager.CreateAsync(user, registerVm.Password);
                 if (result.Succeeded)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    Console.WriteLine(code);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Action("ConfirmEmail", new {code, id = user.Id});
-                    Console.WriteLine(callbackUrl);
                     if (_userManager.Options.SignIn.RequireConfirmedEmail)
                     {
-                        return View("EmailConfirmation",user.Email);
+                        await SendConfirmationEmail(user,registerVm.ReturnUrl);
+                        return View("EmailConfirmationSent",new EmailConfirmationSentVm()
+                        {
+                            Username = user.UserName,
+                            Email = user.Email,
+                            ReturnUrl = registerVm.ReturnUrl
+                        });
                     }
                     else
                     {
@@ -109,7 +83,7 @@ namespace IdentityServerHost.Quickstart.UI
                 }
             }
 
-            return View("register");
+            return View("Register");
         }
         /// <summary>
         /// Entry point into the login workflow
@@ -119,7 +93,11 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
-
+            
+            if (TempData.ContainsKey("isEmailHasBeenJustConfirmed"))
+            {
+                vm.IsEmailHasBeenJustConfirmed = (bool)TempData["isEmailHasBeenJustConfirmed"];
+            }
             if (vm.IsExternalLoginOnly)
             {
                 // we only have one option for logging in and it's an external provider
@@ -136,6 +114,7 @@ namespace IdentityServerHost.Quickstart.UI
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
+        
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
@@ -166,13 +145,16 @@ namespace IdentityServerHost.Quickstart.UI
                 }
             }
 
+            LoginViewModel vm;
+            
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password,
                     model.RememberLogin, lockoutOnFailure: true);
+                // get the user 
+                var user = await _userManager.FindByNameAsync(model.Username);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName,
                         clientId: context?.Client.ClientId));
 
@@ -204,14 +186,21 @@ namespace IdentityServerHost.Quickstart.UI
                         throw new Exception("invalid return URL");
                     }
                 }
-
+                
+                
+                if (!user.EmailConfirmed)
+                {
+                    vm = await BuildLoginViewModelAsync(model);
+                    vm.UserTryToLoginWithUnconfirmedEmail = true;
+                    vm.Email = user.Email;
+                    return View(vm);
+                }
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials",
                     clientId: context?.Client.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
-            // something went wrong, show form with error
-            var vm = await BuildLoginViewModelAsync(model);
+            vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
 
@@ -407,5 +396,7 @@ namespace IdentityServerHost.Quickstart.UI
 
             return vm;
         }
+
+        
     }
 }

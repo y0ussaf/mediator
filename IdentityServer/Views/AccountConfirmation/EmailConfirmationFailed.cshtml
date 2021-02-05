@@ -1,0 +1,13 @@
+﻿@model SendEmailConfirmationFormVm
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<div class="alert alert-danger" role="alert">
+    email confirmation failed
+</div>
+<div>
+    click here to send new confirmation email 
+</div>
+<partial name="_EmailConfirmationForm" model="Model"/>

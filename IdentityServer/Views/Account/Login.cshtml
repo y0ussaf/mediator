@@ -1,5 +1,11 @@
 @model LoginViewModel
-
+@{
+    var sendEmailConfirmationFormVm = new SendEmailConfirmationFormVm()
+    {
+        Email = Model.Email,
+        ReturnUrl = Model.ReturnUrl
+    };
+}
 <div class="login-page">
     <div class="lead">
         <h1>Login</h1>
@@ -7,7 +13,23 @@
     </div>
 
     <partial name="_ValidationSummary"/>
-
+    
+    @if (Model.UserTryToLoginWithUnconfirmedEmail)
+    {
+        <div class="row">
+            <div class="alert alert-warning" role="alert">
+              your email is not confirmed
+            </div>
+            <partial name="_EmailConfirmationForm" model="sendEmailConfirmationFormVm"/>
+        </div>
+    }
+    
+    @if (Model.IsEmailHasBeenJustConfirmed)
+        {
+            <div class="alert alert-success" role="alert">
+              your email has been confirmed you can now login to your account
+            </div>
+        }
     <div class="row">
 
         @if (Model.EnableLocalLogin)

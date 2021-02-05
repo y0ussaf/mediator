@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -12,7 +13,11 @@ namespace IdentityServerHost.Quickstart.UI
     {
         public bool AllowRememberLogin { get; set; } = true;
         public bool EnableLocalLogin { get; set; } = true;
-
+        
+        public bool IsEmailHasBeenJustConfirmed { get; set; } = false;
+        
+        public string Email { get; set; }
+        public bool UserTryToLoginWithUnconfirmedEmail { get; set; } = false;
         public IEnumerable<ExternalProvider> ExternalProviders { get; set; } = Enumerable.Empty<ExternalProvider>();
 
         public IEnumerable<ExternalProvider> VisibleExternalProviders =>
