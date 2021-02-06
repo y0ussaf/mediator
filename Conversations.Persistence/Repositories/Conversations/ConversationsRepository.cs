@@ -21,12 +21,27 @@ namespace Conversations.Persistence.Repositories.Conversations
         public async Task<Conversation> GetConversationById(string conversationId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
-            var conversation = await connection.QuerySingleOrDefaultAsync<Conversation>(
-                @"select * from Conversations  where Id = @id", new
-            {
-                id = conversationId
-            },_unitOfWorkContext.GetTransaction());
-            return conversation;
+            var conversations =
+                await connection.QueryAsync<Conversation, ConversationParticipant, Participant, Conversation>(
+                    @"select * from Conversations as C inner join ConversationsParticipants as CP
+                          on Conversations.Id = ConversationsParticipants.ConversationId
+                          inner join Participants P on CP.ParticipantId = P.Id
+                          where C.Id = @id",
+                    
+                    (c, cp, p) =>
+                    {
+                        cp.Participant = p;
+                        c.ConversationParticipants.Add(cp);
+                        return c;
+                    },
+                    new
+                    {
+                        id = conversationId
+                    },
+                    _unitOfWorkContext.GetTransaction()
+                );
+            
+            return conversations.FirstOrDefault();
         }
 
         public async Task<List<Participant>> GetConversationParticipants(string conversationId)
@@ -174,6 +189,18 @@ namespace Conversations.Persistence.Repositories.Conversations
                     authorId
                 },
                 _unitOfWorkContext.GetTransaction()
+            );
+        }
+
+        public async Task DeleteConversation(string conversationId)
+        {
+            var connection = _unitOfWorkContext.GetSqlConnection();
+            await connection.ExecuteAsync(
+                @"delete from Conversations where Id = @conversationId "
+                ,new
+                {
+                    conversationId
+                }
             );
         }
     }

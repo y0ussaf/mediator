@@ -29,7 +29,7 @@ namespace Conversations.API.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateConversation([FromBody] CreateConversationCommand command)
+        public async Task<IActionResult> CreateConversation( CreateConversationCommand command)
         {
             
             await _mediator.Send(command);
@@ -76,7 +76,12 @@ namespace Conversations.API.Controllers
             await _mediator.Send(command);
             return Ok();
         }
-        
+
+        [HttpPost("{conversationId}/quit")]
+        public async Task<IActionResult> QuitGroupConversation()
+        {
+            return Ok();
+        }
         [HttpGet("participants/latestMessages")]
         public async Task<IActionResult> GetLatestMessageInEachConversations(GetLatestMessageInEachConversationQuery query)
         {

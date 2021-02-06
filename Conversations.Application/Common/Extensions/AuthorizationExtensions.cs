@@ -1,5 +1,4 @@
-﻿using Conversations.API.Common;
-using Conversations.API.Requirements;
+﻿using Conversations.API.Requirements;
 using Conversations.Application.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,11 +27,14 @@ namespace Conversations.Application.Common.Extensions
                 builder.AddRequirements(new BelongsToConversationRequirement());
             });
             
-            authorizationOptions.AddPolicy(PoliciesNames.CanDeleteConversation,(builder =>
+            authorizationOptions.AddPolicy(PoliciesNames.CanDeleteGroupConversation,(builder =>
             {
                 builder.AddRequirements(new ConversationSuperAdminRequirement());
             }));
-            
+            authorizationOptions.AddPolicy(PoliciesNames.CanDeleteContactConversation,(builder =>
+            {
+                builder.AddRequirements(new BelongsToConversationRequirement());
+            }));
             authorizationOptions.AddPolicy(PoliciesNames.CanAddParticipantToConversation, builder =>
             {
                 builder.AddRequirements(new ConversationAdminRequirement());
@@ -46,6 +48,11 @@ namespace Conversations.Application.Common.Extensions
             authorizationOptions.AddPolicy(PoliciesNames.CanAssignAdminRoleToAnotherParticipant,(builder =>
             {
                 builder.AddRequirements(new ConversationSuperAdminRequirement());
+            }));
+
+            authorizationOptions.AddPolicy(PoliciesNames.CanQuitGroupConversation,(builder =>
+            {
+                builder.AddRequirements(new BelongsToConversationRequirement());
             }));
             return authorizationOptions;
         }

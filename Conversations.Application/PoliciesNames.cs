@@ -1,4 +1,4 @@
-﻿namespace Conversations.API.Common
+﻿namespace Conversations.Application
 {
     public static class PoliciesNames
     {
@@ -7,7 +7,9 @@
         public const string CanAddParticipantToConversation = "CanAddParticipant";
         public const string CanRemoveParticipantFromConversation = "CanRemoveParticipant";
         public const string CanAssignAdminRoleToAnotherParticipant = "CanAssignAdminRoleToAnotherParticipant";
-        public const string CanDeleteConversation = "CanDeleteConversation";
+        public const string CanDeleteGroupConversation = "CanDeleteGroupConversation";
+        public const string CanDeleteContactConversation = "CanDeleteContactConversation";
+        public const string CanQuitGroupConversation = "CanQuitGroupConversation";
 
     }
 }

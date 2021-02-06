@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using Conversations.API.Common;
 using Conversations.API.Requirements;
 using Conversations.Application.Common.Behaviours;
 using Conversations.Application.Requirements;

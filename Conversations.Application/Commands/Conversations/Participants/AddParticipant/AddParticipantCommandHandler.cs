@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Conversations.API.Common;
 using Conversations.Application.Common.Exceptions;
 using Conversations.Application.Common.Interfaces;
 using Conversations.Domain.Entities;

@@ -35,7 +35,7 @@ namespace Conversations.API
                 .AddJwtBearer(options =>
                 {
                     options.Audience = "conversations";
-                    options.Authority = "https://localhost:5000";
+                    options.Authority = "https://localhost:5001";
                 });
             services.AddPersistence(Configuration);
             services.AddApplication();

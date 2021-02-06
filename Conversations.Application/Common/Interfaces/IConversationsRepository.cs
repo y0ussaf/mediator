@@ -18,6 +18,7 @@ namespace Conversations.Application.Common.Interfaces
         public Task AddParticipantToConversation(string conversationId, string participantId);
         public Task DeleteParticipantFromConversation(string conversationId, string participantId);
         public Task AddMessage(string conversationId, string authorId,Message message);
-        
+        public Task DeleteConversation(string conversationId);
+
     }
 }
