@@ -3,12 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Conversations.Application.Common.Exceptions;
 using Conversations.Application.Common.Interfaces;
-using Conversations.Application.Requirements;
 using Conversations.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Conversations.Application.Commands.Conversations.QuitGroupConversation
+namespace Conversations.Application.Commands.Conversations.Participants.QuitGroupConversation
 {
     public class QuitGroupConversationCommandHandler : IRequestHandler<QuitConversationCommand>
     {

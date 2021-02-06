@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Commands\Conversations\Messages" />
-      <Folder Include="Commands\Conversations\Participants" />
       <Folder Include="Queries\Conversations\Messages" />
       <Folder Include="Queries\Conversations\Participants" />
     </ItemGroup>

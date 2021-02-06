@@ -203,5 +203,20 @@ namespace Conversations.Persistence.Repositories.Conversations
                 }
             );
         }
+
+        public async Task AssignRoleToParticipant(string conversationId, string participantId, Roles role)
+        {
+            var connection = _unitOfWorkContext.GetSqlConnection();
+            await connection.ExecuteAsync(
+                @"update ConversationsParticipants set Role = @role where ConversationId = @conversationId
+                    and ParticipantId = @participantId",
+                new
+                {
+                    role = (int) role,
+                    conversationId,
+                    participantId
+                }
+            );
+        }
     }
 }

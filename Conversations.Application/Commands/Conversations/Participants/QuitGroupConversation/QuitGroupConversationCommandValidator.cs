@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Conversations.Application.Commands.Conversations.QuitGroupConversation
+namespace Conversations.Application.Commands.Conversations.Participants.QuitGroupConversation
 {
     public class QuitGroupConversationCommandValidator : AbstractValidator<QuitConversationCommand>
     {

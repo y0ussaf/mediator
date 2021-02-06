@@ -27,8 +27,8 @@ namespace Conversations.Application.Commands.Participants.CreateParticipant
                 {
                     await _participantsRepository.CreateParticipant(new Participant
                     {
-                        Name = request.Name,
-                        PseudoName = request.PseudoName
+                        Id = request.ParticipantId,
+                        Name = request.Name
                     });
                     await unitOfWork.CommitWork();
                 }
