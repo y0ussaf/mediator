@@ -40,6 +40,7 @@ namespace Conversations.API
             services.AddPersistence(Configuration);
             services.AddApplication();
             services.AddControllers();
+            
             services.AddValidatorsFromAssemblyContaining(typeof(IConversationsRepository));
         }
 

@@ -1,6 +1,4 @@
-﻿using Conversations.API.Requirements;
-using Conversations.Application;
-using Conversations.Application.Requirements;
+﻿using Conversations.Application.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Conversations.API.Common

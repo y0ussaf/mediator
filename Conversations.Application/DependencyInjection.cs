@@ -24,38 +24,6 @@ namespace Conversations.Application
             return serviceCollection;
         }
 
-        public static AuthorizationOptions AddPolicies(this AuthorizationOptions authorizationOptions)
-        {
-            authorizationOptions.AddPolicy(PoliciesNames.CanAddMessagePolicy,builder =>
-            {
-                builder.AddRequirements(new BelongsToConversationRequirement());
-            });
-            
-            authorizationOptions.AddPolicy(PoliciesNames.CanQueryConversation, builder =>
-            {
-                builder.AddRequirements(new BelongsToConversationRequirement());
-            });
-            
-            authorizationOptions.AddPolicy(PoliciesNames.CanDeleteConversation,(builder =>
-            {
-                builder.AddRequirements(new ConversationSuperAdminRequirement());
-            }));
-            
-            authorizationOptions.AddPolicy(PoliciesNames.CanAddParticipantToConversation, builder =>
-            {
-                builder.AddRequirements(new ConversationAdminRequirement());
-            });
-            
-            authorizationOptions.AddPolicy(PoliciesNames.CanRemoveParticipantFromConversation,(builder =>
-            {
-                builder.AddRequirements(new ConversationAdminRequirement());
-            }));
-            
-            authorizationOptions.AddPolicy(PoliciesNames.CanAssignAdminRoleToAnotherParticipant,(builder =>
-            {
-                builder.AddRequirements(new ConversationSuperAdminRequirement());
-            }));
-            return authorizationOptions;
-        }
+       
     }
 }

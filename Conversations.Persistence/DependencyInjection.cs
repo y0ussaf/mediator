@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.SqlClient;
+using Conversations.Application.Common.Extensions;
 using Conversations.Application.Common.Interfaces;
 using Conversations.Persistence.Repositories.Conversations;
 using Conversations.Persistence.Repositories.Participants;
@@ -16,10 +17,10 @@ namespace Conversations.Persistence
                 var conStr = configuration.GetSection("ConversationsDb")["ConnectionString"];
                 return new SqlConnection(conStr);
             });
+            serviceCollection.AddRequirementsHandlers();
             serviceCollection.AddScoped<IUnitOfWorkContext,UnitOfWorkContext>();
             serviceCollection.AddScoped<IConversationsRepository, ConversationsRepository>();
             serviceCollection.AddScoped<IParticipantsRepository, ParticipantsRepository>();
-            
             return serviceCollection;
         }
     }
