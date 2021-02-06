@@ -18,7 +18,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             _unitOfWorkContext = unitOfWorkContext;
         }
         
-        public async Task<Conversation> GetConversationById(int conversationId)
+        public async Task<Conversation> GetConversationById(string conversationId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             var conversation = await connection.QuerySingleOrDefaultAsync<Conversation>(
@@ -29,7 +29,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             return conversation;
         }
 
-        public async Task<List<Participant>> GetConversationParticipants(int conversationId)
+        public async Task<List<Participant>> GetConversationParticipants(string conversationId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             var result = await connection.QueryAsync<Participant>(
@@ -43,7 +43,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             return result.ToList();
         }
 
-        public async Task<bool> ParticipantBelongsToConversation(int conversationId,int participantId)
+        public async Task<bool> ParticipantBelongsToConversation(string conversationId,string participantId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             var result  = await connection.QuerySingleOrDefaultAsync<int?>(
@@ -61,7 +61,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             return result.HasValue;
         }
 
-        public async Task<List<Message>> GetConversationMessages(int conversationId,int page, int pageSize)
+        public async Task<List<Message>> GetConversationMessages(string conversationId,int page, int pageSize)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             var result = await connection.QueryAsync<Message,Participant,Message>(
@@ -84,7 +84,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             return result.ToList();
         }
 
-        public async Task<List<Message>> LatestMessagesInEachConversation(int participantId,int page, int pageSize)
+        public async Task<List<Message>> LatestMessagesInEachConversation(string participantId,int page, int pageSize)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             var result = await connection.QueryAsync<Message,Participant,Message>(
@@ -127,12 +127,12 @@ namespace Conversations.Persistence.Repositories.Conversations
             await connection.ExecuteAsync(
                 @"St_InsertConversation",dynamicParameters,_unitOfWorkContext.GetTransaction(),commandType:CommandType.StoredProcedure
             );
-            var conversationId = dynamicParameters.Get<int>("@ConversationId");
+            var conversationId = dynamicParameters.Get<string>("@ConversationId");
             conversation.Id = conversationId;
 
         }
 
-        public async Task AddParticipantToConversation(int conversationId, int participantId)
+        public async Task AddParticipantToConversation(string conversationId, string participantId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             await connection.ExecuteAsync(
@@ -147,7 +147,7 @@ namespace Conversations.Persistence.Repositories.Conversations
                 );
         }
 
-        public async Task DeleteParticipantFromConversation(int conversationId, int participantId)
+        public async Task DeleteParticipantFromConversation(string conversationId, string participantId)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             await connection.ExecuteAsync(
@@ -161,7 +161,7 @@ namespace Conversations.Persistence.Repositories.Conversations
             );
         }
 
-        public async Task AddMessage(int conversationId, int authorId, Message message)
+        public async Task AddMessage(string conversationId, string authorId, Message message)
         {
             var connection = _unitOfWorkContext.GetSqlConnection();
             await connection.ExecuteAsync(

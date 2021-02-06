@@ -6,8 +6,7 @@ namespace Conversations.Application.Queries.Conversations.Messages.GetLatestMess
     {
         public GetLatestMessageInEachConversationQueryValidator()
         {
-            RuleFor(x => x.ParticipantId)
-                .NotNull();
+            
             RuleFor(x => x.Page)
                 .GreaterThanOrEqualTo(0);
             RuleFor(x => x.Size)

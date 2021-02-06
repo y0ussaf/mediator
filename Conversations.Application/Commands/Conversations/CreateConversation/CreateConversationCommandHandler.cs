@@ -13,14 +13,19 @@ namespace Conversations.Application.Commands.Conversations.CreateConversation
 
     public class CreateConversationCommandHandler : IRequestHandler<CreateConversationCommand>
     {
-        private readonly IUserManager _userManager;
         private readonly IUnitOfWorkContext _unitOfWorkContext;
         private readonly IConversationsRepository _conversationsRepository;
-        public CreateConversationCommandHandler(IUserManager userManager,IUnitOfWorkContext unitOfWorkContext,IConversationsRepository conversationsRepository)
+        private readonly ICurrentUserService _currentUserService;
+
+        public CreateConversationCommandHandler(
+            IUnitOfWorkContext unitOfWorkContext,
+            IConversationsRepository conversationsRepository,
+            ICurrentUserService currentUserService
+        )
         {
-            _userManager = userManager;
             _unitOfWorkContext = unitOfWorkContext;
             _conversationsRepository = conversationsRepository;
+            _currentUserService = currentUserService;
         }
         
         public async Task<Unit> Handle(CreateConversationCommand request, CancellationToken cancellationToken)
@@ -37,19 +42,31 @@ namespace Conversations.Application.Commands.Conversations.CreateConversation
                         CreatedAt = DateTime.Now
                     };
                     
-                    var conversationParticipants = request.Participants
-                        .Select(p =>
+                    //set the current user as the super admin of this conversation
+
+                    var conversationParticipants = new List<ConversationParticipant>
+                    {
+                        new ConversationParticipant
                         {
-                            Debug.Assert(p.Id != null, "p.Id != null");
-                            return new ConversationParticipant
+                            Participant = new Participant
                             {
-                                Participant = new Participant
-                                {
-                                    Id = p.Id.Value
-                                },
-                                Role = _userManager.UserId == p.Id.Value  ? Roles.SuperAdmin : Roles.Participant
-                            };
+                                Id = _currentUserService.GetCurrentUserId()
+                            }, 
+                            Role = Roles.SuperAdmin
+                        }
+                    };
+                    
+                    var otherParticipants = request.Participants
+                        .Select(p => new ConversationParticipant
+                        {
+                            Participant = new Participant
+                            {
+                                Id = p.Id
+                            },
+                            Role = Roles.Participant
                         }).ToList();
+                    
+                    conversationParticipants.AddRange(otherParticipants);
                     
                     conversation.ConversationParticipants = conversationParticipants;
                     await _conversationsRepository.CreateConversation(conversation);

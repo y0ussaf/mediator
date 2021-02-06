@@ -9,15 +9,15 @@ namespace Conversations.Application.Common.Interfaces
     public interface IConversationsRepository
     {
 
-        public Task<Conversation> GetConversationById(int conversationId);
-        public Task<List<Participant>> GetConversationParticipants(int conversationId);
-        public Task<bool> ParticipantBelongsToConversation(int conversationId,int participantId);
-        public Task<List<Message>> GetConversationMessages(int conversationId,int page,int pageSize);
-        public Task<List<Message>> LatestMessagesInEachConversation(int participantId,int page, int pageSize);
+        public Task<Conversation> GetConversationById(string conversationId);
+        public Task<List<Participant>> GetConversationParticipants(string conversationId);
+        public Task<bool> ParticipantBelongsToConversation(string conversationId,string participantId);
+        public Task<List<Message>> GetConversationMessages(string conversationId,int page,int pageSize);
+        public Task<List<Message>> LatestMessagesInEachConversation(string participantId,int page, int pageSize);
         public Task CreateConversation(Conversation conversation);
-        public Task AddParticipantToConversation(int conversationId, int participantId);
-        public Task DeleteParticipantFromConversation(int conversationId, int participantId);
-        public Task AddMessage(int conversationId, int authorId,Message message);
+        public Task AddParticipantToConversation(string conversationId, string participantId);
+        public Task DeleteParticipantFromConversation(string conversationId, string participantId);
+        public Task AddMessage(string conversationId, string authorId,Message message);
         
     }
 }

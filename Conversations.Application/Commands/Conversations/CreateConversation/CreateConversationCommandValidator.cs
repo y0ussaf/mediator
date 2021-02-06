@@ -11,7 +11,7 @@ namespace Conversations.Application.Commands.Conversations.CreateConversation
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Participants)
-                        .Must(x => x.Count >= 2)
+                        .Must(x => x.Count >= 1)
                         .WithMessage("conversation should have at least 2 participants")
                         .DependentRules(() =>
                         {

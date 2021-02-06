@@ -33,7 +33,7 @@ namespace Conversations.API.Common.Middlewares
                     result = JsonConvert.SerializeObject(validationException.Failures);
                 }
 
-                if (e is BadRequest)
+                if (e is BadRequestException)
                 {
                     code = HttpStatusCode.BadRequest;
                 }

@@ -31,6 +31,12 @@ namespace Conversations.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer(options =>
+                {
+                    options.Audience = "conversations";
+                    options.Authority = "https://localhost:5000";
+                });
             services.AddPersistence(Configuration);
             services.AddApplication();
             services.AddControllers();

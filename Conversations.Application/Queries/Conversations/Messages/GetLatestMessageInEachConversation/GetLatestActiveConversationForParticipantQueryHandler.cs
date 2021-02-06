@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Conversations.API.Common;
+using Conversations.Application.Common.Exceptions;
 using Conversations.Application.Common.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Conversations.Application.Queries.Conversations.Messages.GetLatestMessageInEachConversation
 {
@@ -15,12 +18,22 @@ namespace Conversations.Application.Queries.Conversations.Messages.GetLatestMess
             private readonly IUnitOfWorkContext _unitOfWorkContext;
             private readonly IConversationsRepository _conversationsRepository;
             private readonly IMapper _mapper;
+            private readonly IAuthorizationService _authorizationService;
+            private readonly ICurrentUserService _currentUserService;
 
-            public GetLatestActiveConversationForParticipantQueryHandler(IUnitOfWorkContext unitOfWorkContext,IConversationsRepository conversationsRepository,IMapper mapper)
+            public GetLatestActiveConversationForParticipantQueryHandler(
+                IUnitOfWorkContext unitOfWorkContext,
+                IConversationsRepository conversationsRepository,
+                IMapper mapper,
+                IAuthorizationService authorizationService,
+                ICurrentUserService currentUserService
+            )
             {
                 _unitOfWorkContext = unitOfWorkContext;
                 _conversationsRepository = conversationsRepository;
                 _mapper = mapper;
+                _authorizationService = authorizationService;
+                _currentUserService = currentUserService;
             }
 
             public async Task<LatestMessageInEachConversationVm> Handle(GetLatestMessageInEachConversationQuery request, CancellationToken cancellationToken)
@@ -30,8 +43,8 @@ namespace Conversations.Application.Queries.Conversations.Messages.GetLatestMess
                     try
                     {
                         await unitOfWork.BeginWork();
-                        Debug.Assert(request.ParticipantId != null, "request.ParticipantId != null");
-                        var messages = await _conversationsRepository.LatestMessagesInEachConversation(request.ParticipantId.Value,request.Page,request.Size);
+                        var userId = _currentUserService.GetCurrentUserId();
+                        var messages = await _conversationsRepository.LatestMessagesInEachConversation(userId,request.Page,request.Size);
                         var latestMessageInEachConversationVm = new LatestMessageInEachConversationVm()
                         {
                             Messages = _mapper.Map<List<MessageDto>>(messages)

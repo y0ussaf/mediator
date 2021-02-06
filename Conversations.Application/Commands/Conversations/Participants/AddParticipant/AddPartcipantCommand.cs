@@ -4,7 +4,7 @@ namespace Conversations.Application.Commands.Conversations.Participants.AddParti
 {
     public class AddParticipantCommand : IRequest
     {
-        public int? ParticipantId { get; set; }
-        public int? ConversationId { get; set; }
+        public string ParticipantId { get; set; }
+        public string ConversationId { get; set; }
     }
 }

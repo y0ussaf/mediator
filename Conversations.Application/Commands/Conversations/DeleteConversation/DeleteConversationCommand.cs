@@ -4,6 +4,6 @@ namespace Conversations.Application.Commands.Conversations.DeleteConversation
 {
     public class DeleteConversationCommand : IRequest
     {
-        public int? ConversationId { get; set; }
+        public string ConversationId { get; set; }
     }
 }

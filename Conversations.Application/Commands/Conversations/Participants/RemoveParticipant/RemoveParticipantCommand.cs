@@ -4,7 +4,7 @@ namespace Conversations.Application.Commands.Conversations.Participants.RemovePa
 {
     public class RemoveParticipantCommand : IRequest
     {
-        public int? ConversationId { get; set; }
-        public int? ParticipantId { get; set; }
+        public string ConversationId { get; set; }
+        public string ParticipantId { get; set; }
     }
 }

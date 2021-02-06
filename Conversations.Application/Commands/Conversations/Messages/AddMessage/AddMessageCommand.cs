@@ -5,8 +5,8 @@ namespace Conversations.Application.Commands.Conversations.Messages.AddMessage
 {
     public class AddMessageCommand : IRequest
     {
-        public int? ConversationId { get; set; }
+        public string ConversationId { get; set; }
         public string Content { get; set; }
-        public int? AuthorId { get; set; }
+        public string AuthorId { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace IdentityServer
            {
                new ApiResource("conversations")
                {
+                   Name = "conversations",
                    Scopes =
                    {
                        ConversationsApiScopes.ConversationsRead,

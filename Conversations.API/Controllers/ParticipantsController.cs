@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using Conversations.Application.Commands.Participants.CreateParticipant;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conversations.API.Controllers
 {
     [ApiController]
     [Route("/[controller]")]
+    [Authorize]
     public class ParticipantsController : ControllerBase
     {
         private readonly IMediator _mediator;
