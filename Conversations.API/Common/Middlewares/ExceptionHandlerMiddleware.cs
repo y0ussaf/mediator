@@ -38,6 +38,10 @@ namespace Conversations.API.Common.Middlewares
                     code = HttpStatusCode.BadRequest;
                 }
 
+                if (e is NotAuthorizedException)
+                {
+                    code = HttpStatusCode.Unauthorized;
+                }
                 if (e is NotFoundException)
                 {
                     code = HttpStatusCode.NotFound;

@@ -17,9 +17,9 @@ namespace Conversations.Persistence
                 return new SqlConnection(conStr);
             });
             serviceCollection.AddScoped<IUnitOfWorkContext,UnitOfWorkContext>();
-       
             serviceCollection.AddScoped<IConversationsRepository, ConversationsRepository>();
             serviceCollection.AddScoped<IParticipantsRepository, ParticipantsRepository>();
+            
             return serviceCollection;
         }
     }

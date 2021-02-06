@@ -1,4 +1,5 @@
 ﻿using Conversations.API.Requirements;
+using Conversations.Application;
 using Conversations.Application.Requirements;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,10 +11,7 @@ namespace Conversations.API.Common
         {
             serviceCollection.AddAuthorization(options =>
             {
-                options.AddPolicy(PoliciesNames.CanAddMessagePolicy,builder =>
-                {
-                    builder.AddRequirements(new BelongsToConversationRequirement());
-                });
+                options.AddPolicies();
             });
             return serviceCollection;
         }

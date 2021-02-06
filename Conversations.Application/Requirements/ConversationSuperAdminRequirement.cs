@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Conversations.Application.Requirements
 {
-    public class ConversationSuperAdminRequirement
+    public class ConversationSuperAdminRequirement : IAuthorizationRequirement
     {
         
     }

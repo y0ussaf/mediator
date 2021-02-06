@@ -37,7 +37,7 @@ namespace Conversations.Application.Commands.Conversations.DeleteConversation
                 }
 
                 var authorizationResult = await _authorizationService.AuthorizeAsync(_currentUserService.GetClaimsPrincipal(), conversation,
-                    PoliciesNames.CanRemoveConversation);
+                    PoliciesNames.CanDeleteConversation);
                 if (!authorizationResult.Succeeded)
                 {
                     throw new NotAuthorizedException();
